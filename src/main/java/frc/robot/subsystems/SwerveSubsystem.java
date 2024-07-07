@@ -31,7 +31,6 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule leftBack;
     private final SwerveModule rightBack;
     
-
     private final Pigeon2 gyro;
     private final Pigeon2Configuration gyroConfig;
 

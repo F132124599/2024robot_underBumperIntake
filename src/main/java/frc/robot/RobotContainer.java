@@ -64,11 +64,16 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("climbBack", new ClimbBack(m_climberSubsystem, -9.6).withTimeout(0));
 
+    NamedCommands.registerCommand("ClimbUp", new ClimbUp(m_climberSubsystem, 9.6).withTimeout(0));
+
     NamedCommands.registerCommand("ShootPrepSpeaker", new ShootPrepSpeaker(m_shooterSubsystem).withTimeout(0));
 
     NamedCommands.registerCommand("ShootPrepAMP", new ShootPrepAMP(m_shooterSubsystem).withTimeout(0));
 
-    NamedCommands.registerCommand("OutNote", new OutNote(m_indexerSubsystem));
+    NamedCommands.registerCommand("OutNote", new OutNote(m_indexerSubsystem).withTimeout(0));
+
+    NamedCommands.registerCommand("NoteIntake", new NoteIntake(m_intakeSubsystem, m_indexerSubsystem).withTimeout(0));
+
 
     
 
