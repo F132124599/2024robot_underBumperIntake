@@ -24,44 +24,18 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   private final CANSparkMax intakeWheel;
-  private final CANSparkMax intakeArm;
 
-  private final PIDController armPID;
 
-  private final RelativeEncoder armEncoder;
-  private final CANcoder absoluteArmEncoder;
-
-  private final CANcoderConfiguration absoluteEncoderConfig;
-
-  private  double pidOutput;
-
-  private  double arriveAngle;
   public IntakeSubsystem() {
     intakeWheel = new CANSparkMax(IntakeConstants.intakeWheel_ID, MotorType.kBrushless);
-    intakeArm = new CANSparkMax(IntakeConstants.intakeArm_ID, MotorType.kBrushless);
-
-    armPID = new PIDController(IntakeConstants.intakeArmPID_Kp, IntakeConstants.intakeArmPID_Ki, IntakeConstants.intakeArmPID_Kd);
-
-    armEncoder = intakeArm.getEncoder();
-    absoluteArmEncoder = new CANcoder(IntakeConstants.absoluteArmEncoderID);
-    absoluteEncoderConfig = new CANcoderConfiguration();
-
-    absoluteEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    absoluteEncoderConfig.MagnetSensor.MagnetOffset = IntakeConstants.intakeCancoderOffset;
-    absoluteEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    absoluteArmEncoder.getConfigurator().apply(absoluteEncoderConfig);
 
     intakeWheel.restoreFactoryDefaults();
-    intakeArm.restoreFactoryDefaults();
 
     intakeWheel.setIdleMode(IdleMode.kBrake);
-    intakeArm.setIdleMode(IdleMode.kBrake);
 
-    intakeWheel.setInverted(true);
-    intakeArm.setInverted(true);
+    intakeWheel.setInverted(IntakeConstants.intakeWheelReversed);
 
     intakeWheel.burnFlash();
-    intakeArm.burnFlash();
 
   }
 
@@ -69,24 +43,12 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeWheel.setVoltage(IntakeConstants.intakewheelVoltage);
   }
 
-  public void DownArm() {
-    arriveAngle = IntakeConstants.arriveDownAngle;
-  }
-
   public void stopIntake() {
     intakeWheel.setVoltage(0);
   }
 
-  public void raiseArm() {
-    arriveAngle = IntakeConstants.arriveUpAngle;
-  }
-
   public void noteOut() {
     intakeWheel.setVoltage(-IntakeConstants.intakewheelVoltage);
-  }
-
-  public double getAngle() {
-    return absoluteArmEncoder.getAbsolutePosition().getValueAsDouble()*360;
   }
 
   public boolean isJam(){
@@ -96,11 +58,5 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    pidOutput = armPID.calculate(getAngle(), arriveAngle);
-    pidOutput = Constants.setMaxOutPut(pidOutput, IntakeConstants.intakeArmMaxOutPut);
-    SmartDashboard.getNumber("intakeArmPidOutPut", pidOutput);
-    SmartDashboard.getNumber("armAngle", getAngle());
-
-    intakeArm.setVoltage(pidOutput);
   }
 }

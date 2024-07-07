@@ -27,7 +27,6 @@ public class NoteIntake extends Command {
   @Override
   public void initialize() {
     m_indexerSubsystem.startMotor();
-    m_intakeSubsystem.DownArm();
     m_intakeSubsystem.noteIntake();
   }
 
@@ -41,7 +40,6 @@ public class NoteIntake extends Command {
   public void end(boolean interrupted) {
     m_intakeSubsystem.stopIntake();
     m_indexerSubsystem.stopIndexer();
-    m_intakeSubsystem.raiseArm();
   }
 
   // Returns true when the command should end.

@@ -24,21 +24,13 @@ public final class Constants {
     public static final double kJoystickDeadBand = 0.1;
   }
   public final class IntakeConstants {
-    public static final double intakeArmPID_Kp = 0;
-    public static final double intakeArmPID_Ki = 0;
-    public static final double intakeArmPID_Kd = 0;
 
     public static final double intakeCancoderOffset = 0;
     public static final double intakewheelVoltage = 0;
 
-    public static final double intakeArmArriveAngle = 0;
-    public static final double intakeArmMaxOutPut = 0;
-    public static final double arriveDownAngle = 0;
-    public static final double arriveUpAngle = 0;
-
     public static final int intakeWheel_ID = 32;
-    public static final int intakeArm_ID = 27;
-    public static final int absoluteArmEncoderID = 45;
+
+    public static final boolean intakeWheelReversed = true;
   }
 
   public final class ShooterConstants {
