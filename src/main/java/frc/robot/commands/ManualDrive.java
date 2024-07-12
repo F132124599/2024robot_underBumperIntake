@@ -20,6 +20,7 @@ public class ManualDrive extends Command {
   private final DoubleSupplier xSpeedFunc;
   private final DoubleSupplier ySpeedFunc;
   private final DoubleSupplier zSpeedFunc;
+  private final BooleanSupplier isSlowFunc;
 
   private final SlewRateLimiter xLimiter;
   private final SlewRateLimiter yLimiter;
@@ -28,28 +29,19 @@ public class ManualDrive extends Command {
   private double xSpeed;
   private double ySpeed;
   private double zSpeed;
-  public ManualDrive(SwerveSubsystem swerveSubsystem, DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier zSpeed) {
+  private boolean isSlow;
+  public ManualDrive(SwerveSubsystem swerveSubsystem, DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier zSpeed, BooleanSupplier isSlow) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_swerveSubsystem = swerveSubsystem;
     this.xSpeedFunc = xSpeed;
     this.ySpeedFunc = ySpeed;
     this.zSpeedFunc = zSpeed;
-
-    this.xSpeed = xSpeedFunc.getAsDouble();
-    this.ySpeed = ySpeedFunc.getAsDouble();
-    this.zSpeed = zSpeedFunc.getAsDouble();
+    this.isSlowFunc = isSlow;
 
     this.xLimiter = new SlewRateLimiter(4);
     this.yLimiter = new SlewRateLimiter(4);
     this.zLimiter = new SlewRateLimiter(4);
 
-    // this.xSpeed = MathUtil.applyDeadband(this.xSpeed, OperatorConstants.kJoystickDeadBand);
-    // this.ySpeed = MathUtil.applyDeadband(this.ySpeed, OperatorConstants.kJoystickDeadBand);
-    // this.zSpeed = MathUtil.applyDeadband(this.zSpeed, OperatorConstants.kJoystickDeadBand);
-
-    // this.xSpeed = xLimiter.calculate(this.xSpeed);
-    // this.ySpeed = yLimiter.calculate(this.ySpeed);
-    // this.zSpeed = zLimiter.calculate(this.zSpeed);
 
     addRequirements(m_swerveSubsystem);
   }
@@ -61,6 +53,30 @@ public class ManualDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    xSpeed = xSpeedFunc.getAsDouble();
+    ySpeed = ySpeedFunc.getAsDouble();
+    zSpeed = zSpeedFunc.getAsDouble();
+
+    xSpeed = MathUtil.applyDeadband(this.xSpeed, OperatorConstants.kJoystickDeadBand);
+    ySpeed = MathUtil.applyDeadband(this.ySpeed, OperatorConstants.kJoystickDeadBand);
+    zSpeed = MathUtil.applyDeadband(this.zSpeed, OperatorConstants.kJoystickDeadBand);
+
+    xSpeed = xLimiter.calculate(this.xSpeed);
+    ySpeed = yLimiter.calculate(this.ySpeed);
+    zSpeed = zLimiter.calculate(this.zSpeed);
+
+    isSlow = isSlowFunc.getAsBoolean();
+
+    if(isSlow) {
+      xSpeed = xSpeed*0.6;
+      ySpeed = ySpeed*0.6;
+      zSpeed = zSpeed*0.6;
+    }else {
+      xSpeed = xSpeed*0.8;
+      ySpeed = ySpeed*0.8;
+      zSpeed = zSpeed*0.8;
+    }
+
     m_swerveSubsystem.drive(this.xSpeed, this.ySpeed, this.zSpeed,true);
   }
 

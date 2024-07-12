@@ -25,7 +25,6 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   private final CANSparkMax intakeWheel;
 
-
   public IntakeSubsystem() {
     intakeWheel = new CANSparkMax(IntakeConstants.intakeWheel_ID, MotorType.kBrushless);
 
@@ -33,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeWheel.setIdleMode(IdleMode.kBrake);
 
-    intakeWheel.setInverted(IntakeConstants.intakeWheelReversed);
+    intakeWheel.setInverted(true);
 
     intakeWheel.burnFlash();
 
@@ -47,11 +46,12 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeWheel.setVoltage(0);
   }
 
+
   public void noteOut() {
     intakeWheel.setVoltage(-IntakeConstants.intakewheelVoltage);
   }
 
-  public boolean isJam(){
+  public boolean isJam() {
     return !intakeWheel.getFault(FaultID.kOvercurrent);
   }
 

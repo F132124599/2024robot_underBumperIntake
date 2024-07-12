@@ -145,11 +145,20 @@ public final class Constants {
     public static double maxDriveMotorSpeed = 4.5;
     public static double kDriveBaseRadius = 14.85 * 0.0254;
 
+    public static final boolean leftFrontturningMotorInversion = true;
+    public static final boolean leftFrontDriveMotorInversion = true; 
+    public static final boolean leftBackturningMotorInversion = true;
+    public static final boolean leftBackDriveMotorInversion = true; 
+    public static final boolean rightFrontturningMotorInversion = true;
+    public static final boolean rightFrontDriveMotorInversion = true; 
+    public static final boolean rightBackturningMotorInversion = true;
+    public static final boolean rightBackDriveMotorInversion = true; 
+
   }
 
   public final class RobotContainerConstants {
-    public static final int operatorXboxController_ID = 0;
-    public static final int driverXboxController_ID = 1;
+    public static final int operatorXboxController_ID = 1;
+    public static final int driverXboxController_ID = 0;
   }
 
   public static double setMaxOutPut(double outPut, double maxOutPut){

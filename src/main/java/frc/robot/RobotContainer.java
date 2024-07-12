@@ -17,9 +17,11 @@ import frc.robot.commands.ShootPrepAMP;
 import frc.robot.commands.ShootPrepSpeaker;
 import frc.robot.commands.ShootSpeaker;
 import frc.robot.commands.ThrowNoteAway;
+import frc.robot.commands.TrackNote_LimeLight;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -47,9 +49,11 @@ public class RobotContainer {
   private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
+  private final LimeLightSubsystem m_LimeLightSubsystem = new LimeLightSubsystem();
 
   private final CommandXboxController operatorController = new CommandXboxController(RobotContainerConstants.operatorXboxController_ID);
   private final CommandXboxController driverController = new CommandXboxController(RobotContainerConstants.driverXboxController_ID);
+
 
 
 
@@ -64,16 +68,11 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("climbBack", new ClimbBack(m_climberSubsystem, -9.6).withTimeout(0));
 
-    NamedCommands.registerCommand("ClimbUp", new ClimbUp(m_climberSubsystem, 9.6).withTimeout(0));
-
     NamedCommands.registerCommand("ShootPrepSpeaker", new ShootPrepSpeaker(m_shooterSubsystem).withTimeout(0));
 
     NamedCommands.registerCommand("ShootPrepAMP", new ShootPrepAMP(m_shooterSubsystem).withTimeout(0));
 
-    NamedCommands.registerCommand("OutNote", new OutNote(m_indexerSubsystem).withTimeout(0));
-
-    NamedCommands.registerCommand("NoteIntake", new NoteIntake(m_intakeSubsystem, m_indexerSubsystem).withTimeout(0));
-
+    NamedCommands.registerCommand("OutNote", new OutNote(m_indexerSubsystem));
 
     
 
@@ -97,9 +96,9 @@ public class RobotContainer {
 
     BooleanSupplier ifFeed = ()-> operatorController.getHID().getRightBumper();
     BooleanSupplier climberInsurance = ()-> operatorController.getHID().getBButton();
-    driverController.start().whileTrue(
+    driverController.b().whileTrue(
       Commands.runOnce(()-> {m_swerveSubsystem.resetGyro();}));
-    
+    BooleanSupplier isSlow = ()-> driverController.getHID().getLeftTriggerAxis()>0.4;
 
     DoubleSupplier xSpeed = ()-> driverController.getRawAxis(1);
     DoubleSupplier ySpeed = ()-> driverController.getRawAxis(0);
@@ -107,6 +106,7 @@ public class RobotContainer {
 
 
     operatorController.x().whileTrue(new NoteIntake(m_intakeSubsystem, m_indexerSubsystem));
+    operatorController.x().whileTrue(new TrackNote_LimeLight(m_swerveSubsystem, m_LimeLightSubsystem, m_indexerSubsystem));
     operatorController.a().whileTrue(new ThrowNoteAway(m_intakeSubsystem));
     operatorController.b().whileTrue(new OutNote(m_indexerSubsystem));
     operatorController.rightTrigger().whileTrue(new ShootSpeaker(m_shooterSubsystem, m_indexerSubsystem, ifFeed));
@@ -117,7 +117,7 @@ public class RobotContainer {
 
     // climberSubaystem.setDefaultCommand(climb);
     m_climberSubsystem.setDefaultCommand(new VerticalMovement(m_climberSubsystem, leftClimbSpeed, rightClimbSpeed, climberInsurance));
-    m_swerveSubsystem.setDefaultCommand(new ManualDrive(m_swerveSubsystem, xSpeed, ySpeed, zSpeed));
+    m_swerveSubsystem.setDefaultCommand(new ManualDrive(m_swerveSubsystem, xSpeed, ySpeed, zSpeed, isSlow));
     
   
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,

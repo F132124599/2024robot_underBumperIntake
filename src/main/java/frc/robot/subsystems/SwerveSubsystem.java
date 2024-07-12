@@ -3,16 +3,13 @@ package frc.robot.subsystems;
 import java.util.Optional;
 
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Pigeon2FeaturesConfigs;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -40,25 +37,33 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public SwerveSubsystem() {
         leftFront = new SwerveModule(
-            SwerveConstants.leftFrontDriveMotorID,
-            SwerveConstants.leftFrontTurningMotorID, 
+            SwerveConstants.leftFrontTurningMotorID,
+            SwerveConstants.leftFrontDriveMotorID, 
             SwerveConstants.leftFrontAbsoluteEncoderID, 
-            SwerveConstants.leftFrontOffset);
+            SwerveConstants.leftFrontOffset,
+            SwerveConstants.leftFrontturningMotorInversion,
+            SwerveConstants.leftFrontDriveMotorInversion);
         rightFront = new SwerveModule(
-            SwerveConstants.rightFrontDriveMotorID, 
             SwerveConstants.rightFrontTurningMotorID, 
+            SwerveConstants.rightFrontDriveMotorID, 
             SwerveConstants.rightFrontAbsoluteEncoderID, 
-            SwerveConstants.rightFrontOffset);
+            SwerveConstants.rightFrontOffset,
+            SwerveConstants.rightFrontturningMotorInversion,
+            SwerveConstants.rightFrontDriveMotorInversion);
         leftBack = new SwerveModule(
-            SwerveConstants.leftBackDriveMotorID, 
             SwerveConstants.leftBackTurningMotorID, 
+            SwerveConstants.leftBackDriveMotorID, 
             SwerveConstants.leftBackAbsoluteEncoderID, 
-            SwerveConstants.leftBackOffset);
+            SwerveConstants.leftBackOffset,
+            SwerveConstants.leftBackturningMotorInversion,
+            SwerveConstants.leftBackDriveMotorInversion);
         rightBack = new SwerveModule(
-            SwerveConstants.rightBackDriveMotorID, 
             SwerveConstants.rightBackTurningMotorID, 
+            SwerveConstants.rightBackDriveMotorID, 
             SwerveConstants.rightBackAbsoluteEncoderID, 
-            SwerveConstants.rightBackOffset);
+            SwerveConstants.rightBackOffset,
+            SwerveConstants.rightBackturningMotorInversion,
+            SwerveConstants.rightBackDriveMotorInversion);
         gyro = new Pigeon2(SwerveConstants.pigean2ID);
         gyroConfig = new Pigeon2Configuration();
         gyroConfig.MountPose.MountPoseYaw = -10;
@@ -109,11 +114,12 @@ public class SwerveSubsystem extends SubsystemBase {
     
     public ChassisSpeeds getSpeeds() {
         return SwerveConstants.swervKinematics.toChassisSpeeds(getModuleSates());
-      }
+    }
+
     public void drive(double xSpeed, double ySpeed, double zSpeed, boolean fieldOrient) {
         SwerveModuleState[] states = null;
         if(fieldOrient) {
-            states = SwerveConstants.swervKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(Constants.setMaxOutPut(xSpeed, SwerveConstants.xSpeedMaxOutPut), Constants.setMaxOutPut(ySpeed, SwerveConstants.ySpeedMaxOutPut), Constants.setMaxOutPut(zSpeed, SwerveConstants.zSpeedMaxOutPut), gyro.getRotation2d()));
+            states = SwerveConstants.swervKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, zSpeed, gyro.getRotation2d()));
         }else {
             states = SwerveConstants.swervKinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, zSpeed));
         }
