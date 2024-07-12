@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -23,18 +26,13 @@ import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
-  private final CANSparkMax intakeWheel;
+  private final TalonFX intakeWheel;
 
   public IntakeSubsystem() {
-    intakeWheel = new CANSparkMax(IntakeConstants.intakeWheel_ID, MotorType.kBrushless);
-
-    intakeWheel.restoreFactoryDefaults();
-
-    intakeWheel.setIdleMode(IdleMode.kBrake);
+    intakeWheel = new TalonFX(IntakeConstants.intakeWheel_ID);
 
     intakeWheel.setInverted(true);
-
-    intakeWheel.burnFlash();
+    intakeWheel.setNeutralMode(NeutralModeValue.Coast);
 
   }
 
@@ -49,10 +47,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void noteOut() {
     intakeWheel.setVoltage(-IntakeConstants.intakewheelVoltage);
-  }
-
-  public boolean isJam() {
-    return !intakeWheel.getFault(FaultID.kOvercurrent);
   }
 
   @Override
