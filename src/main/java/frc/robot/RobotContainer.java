@@ -7,6 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotContainerConstants;
 import frc.robot.commands.VerticalMovement;
+import frc.robot.commands.AimBarBack;
+import frc.robot.commands.AimBarOut;
 import frc.robot.commands.ClimbBack;
 import frc.robot.commands.ClimbUp;
 import frc.robot.commands.ManualDrive;
@@ -18,6 +20,7 @@ import frc.robot.commands.ShootPrepSpeaker;
 import frc.robot.commands.ShootSpeaker;
 import frc.robot.commands.ThrowNoteAway;
 import frc.robot.commands.TrackNote_LimeLight;
+import frc.robot.subsystems.AimBarSubSystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -50,6 +53,7 @@ public class RobotContainer {
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem();
   private final LimeLightSubsystem m_LimeLightSubsystem = new LimeLightSubsystem();
+  private final AimBarSubSystem m_AimBarSubSystem = new AimBarSubSystem();
 
   private final CommandXboxController operatorController = new CommandXboxController(RobotContainerConstants.operatorXboxController_ID);
   private final CommandXboxController driverController = new CommandXboxController(RobotContainerConstants.driverXboxController_ID);
@@ -96,16 +100,18 @@ public class RobotContainer {
 
     BooleanSupplier ifFeed = ()-> operatorController.getHID().getRightBumper();
     BooleanSupplier climberInsurance = ()-> operatorController.getHID().getBButton();
+    BooleanSupplier isSlow = ()-> driverController.getHID().getLeftTriggerAxis()>0.4;
     driverController.b().whileTrue(
       Commands.runOnce(()-> {m_swerveSubsystem.resetGyro();}));
-    BooleanSupplier isSlow = ()-> driverController.getHID().getLeftTriggerAxis()>0.4;
 
     DoubleSupplier xSpeed = ()-> driverController.getRawAxis(1);
     DoubleSupplier ySpeed = ()-> driverController.getRawAxis(0);
     DoubleSupplier zSpeed = ()-> driverController.getRawAxis(4);
 
+    driverController.x().whileTrue(new TrackNote_LimeLight(m_swerveSubsystem, m_LimeLightSubsystem, m_indexerSubsystem));
 
-    operatorController.x().whileTrue(new NoteIntake(m_intakeSubsystem, m_indexerSubsystem));
+    operatorController.y().whileTrue(new AimBarOut(m_AimBarSubSystem));
+    operatorController.y().whileFalse(new AimBarBack(m_AimBarSubSystem));
     operatorController.x().whileTrue(new TrackNote_LimeLight(m_swerveSubsystem, m_LimeLightSubsystem, m_indexerSubsystem));
     operatorController.a().whileTrue(new ThrowNoteAway(m_intakeSubsystem));
     operatorController.b().whileTrue(new OutNote(m_indexerSubsystem));

@@ -23,6 +23,24 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final double kJoystickDeadBand = 0.1;
   }
+
+  public final class  AimBarConstants {
+
+    public static final int aimbarArmID = 0;
+
+    public static final double armPid_kp = 0;
+    public static final double armPid_ki = 0;
+    public static final double armPid_kd = 0;
+
+    public static final double armFeedForward_ks = 0;
+    public static final double armFeedForward_kg = 0;
+    public static final double armFeedForward_kv = 0;
+
+    public static final double outAngle = 0;
+    public static final double backAngle = 0;
+
+    public static final double maxOutPut = 0;
+  }
   public final class IntakeConstants {
 
     public static final double intakeCancoderOffset = 0;
