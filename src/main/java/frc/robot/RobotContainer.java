@@ -78,6 +78,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("OutNote", new OutNote(m_indexerSubsystem));
 
+    NamedCommands.registerCommand("NoteIntake", new NoteIntake(m_intakeSubsystem, m_indexerSubsystem).withTimeout(0));
+
     
 
     
