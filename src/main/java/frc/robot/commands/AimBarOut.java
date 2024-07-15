@@ -5,12 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AimBarSubSystem;
+import frc.robot.subsystems.AMPBarSubSystem;
 
 public class AimBarOut extends Command {
   /** Creates a new AimBarOut. */
-  private final AimBarSubSystem m_AimBarSubSystem;
-  public AimBarOut(AimBarSubSystem aimBarSubSystem) {
+  private final AMPBarSubSystem m_AimBarSubSystem;
+  public AimBarOut(AMPBarSubSystem aimBarSubSystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_AimBarSubSystem = aimBarSubSystem;
 

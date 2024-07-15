@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AimBarConstants;
 
-public class AimBarSubSystem extends SubsystemBase {
+public class AMPBarSubSystem extends SubsystemBase {
   /** Creates a new AimBarSubSystem. */
   private final TalonFX aimBarArm;
 
@@ -31,7 +31,7 @@ public class AimBarSubSystem extends SubsystemBase {
   private double OutPut;
 
   private double arriveAngle;
-  public AimBarSubSystem() {
+  public AMPBarSubSystem() {
     aimBarArm = new TalonFX(AimBarConstants.aimbarArmID);
 
     aimBarArm.setInverted(false);
@@ -75,7 +75,7 @@ public class AimBarSubSystem extends SubsystemBase {
     pidOutPut = armPid.calculate(getAngle(), arriveAngle);
     pidOutPut = Constants.setMaxOutPut(pidOutPut, AimBarConstants.maxOutPut);
 
-    feedForwardOutPut = armFeedforward.calculate(getRadians(), arriveAngle*Math.PI/180);
+    feedForwardOutPut = armFeedforward.calculate(getRadians(), 0);
     feedForwardOutPut = Constants.setMaxOutPut(feedForwardOutPut, AimBarConstants.maxOutPut);
 
     OutPut = feedForwardOutPut+pidOutPut;
